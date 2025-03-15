@@ -11,14 +11,18 @@ const Home = () => {
           <button
             type="button"
             className="rounded-md border-2 border-slate-600 bg-slate-600 px-5 py-2 hover:bg-transparent"
-            onClick={navigate("/signin")}
+            onClick={() => {
+              navigate("/signin");
+            }}
           >
             Sign In
           </button>
           <button
             type="submit"
             className={`rounded-md border-2 border-slate-600 px-5 py-2 hover:bg-slate-600`}
-            onClick={navigate("/signup")}
+            onClick={() => {
+              navigate("/signup");
+            }}
           >
             Sign Up
           </button>
