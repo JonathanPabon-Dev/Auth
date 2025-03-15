@@ -14,24 +14,40 @@ export const AuthProvider = ({ children }) => {
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      return { success: false, error };
+    }
     setUser(data.user);
+    return { success: true, data };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      return { success: false, error };
+    }
     setUser(null);
+    return { success: true };
   };
 
   const signUp = async (email, password) => {
-    await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      return { success: false, error };
+    }
+    return { success: true, data };
   };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
-  });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
 
   return (
     <AuthContext.Provider value={{ session, user, signIn, signOut, signUp }}>

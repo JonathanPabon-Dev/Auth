@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const { signUp } = useAuth();
@@ -9,19 +10,41 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+    if (!validateEmail(email)) {
+      setEmailError("Wrong email format");
+      return;
+    }
     try {
-      console.log("Email:", email);
-      console.log("Pass:", password);
       setLoading(true);
-      await signUp(email, password);
+      const result = await signUp(email, password);
+
+      if (result.success) {
+        navigate("/signin");
+        toast.success("Sign up successful");
+        toast.info("Check your email to confirm your user account");
+      } else {
+        setError(result.error.message);
+      }
     } catch (error) {
       setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const handleEmailBlur = () => {
+    setEmailError(!validateEmail(email) ? "Wrong email format" : "");
   };
 
   const passwordsMatch =
@@ -33,21 +56,23 @@ const SignUp = () => {
       <p className="text-center">
         Already have an account?{" "}
         <Link
-          to={"/SignIn"}
+          to={"/signin"}
           className="text-blue-300 underline underline-offset-2"
         >
           Sign in!
         </Link>
       </p>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSignUp}>
         <div className="flex flex-col gap-2">
           <input
             placeholder="Email"
-            className="mt-4 rounded-md p-3 outline-none dark:bg-slate-800"
+            className={`mt-4 rounded-md p-3 outline-none dark:bg-slate-800 ${emailError ? "border-2 border-red-500" : ""}`}
             type="email"
             onChange={(e) => setEmail(e.target.value)}
             required
+            onBlur={handleEmailBlur}
           />
+          {emailError && <p className="text-red-500">{emailError}</p>}
           <input
             placeholder="Password"
             className="mt-4 rounded-md p-3 outline-none dark:bg-slate-800"
@@ -71,8 +96,8 @@ const SignUp = () => {
           {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
-            disabled={loading || !passwordsMatch}
-            className={`mt-4 w-full rounded-md bg-slate-600 p-2 ${loading || !passwordsMatch ? "cursor-not-allowed opacity-50" : "hover:bg-slate-700"}`}
+            disabled={loading || !passwordsMatch || emailError}
+            className={`mt-4 w-full rounded-md bg-slate-600 p-2 ${loading || !passwordsMatch || emailError ? "cursor-not-allowed opacity-50" : "hover:bg-slate-700"}`}
           >
             Sign Up
           </button>
