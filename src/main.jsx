@@ -8,7 +8,7 @@ const root = document.getElementById("root");
 
 createRoot(root).render(
   <StrictMode>
-    <BrowserRouter basename="/Auth/">
+    <BrowserRouter basename="/Auth">
       <App />
     </BrowserRouter>
   </StrictMode>,
