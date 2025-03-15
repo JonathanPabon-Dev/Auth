@@ -26,7 +26,7 @@ const Header = () => {
       <header className="flex items-center justify-between bg-slate-700 px-4 py-2 text-white">
         <div className="user-info">
           <p className="">
-            Bienvenido{" "}
+            Welcome{" "}
             <span className="text-blue-400">{session?.user?.email}</span>
           </p>
         </div>
