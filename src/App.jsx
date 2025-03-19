@@ -5,7 +5,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Page404 from "./pages/Page404";
 import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./pages/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (

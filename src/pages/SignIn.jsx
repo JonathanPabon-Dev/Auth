@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 
 const SignIn = () => {
-  const { signIn } = useAuth();
+  const { signIn, signInGoogle } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPasword] = useState("");
   const [error, setError] = useState("");
@@ -25,6 +25,23 @@ const SignIn = () => {
       if (result.success) {
         navigate("/dashboard");
       } else {
+        setError(result.error.message);
+      }
+    } catch (error) {
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignInGoogle = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const result = await signInGoogle();
+
+      if (!result.success) {
         setError(result.error.message);
       }
     } catch (error) {
@@ -87,6 +104,12 @@ const SignIn = () => {
           </button>
         </div>
       </form>
+      <button
+        onClick={handleSignInGoogle}
+        className="mt-4 w-full rounded-md bg-slate-600 p-2 hover:bg-slate-700"
+      >
+        Sign in with Google
+      </button>
     </div>
   );
 };
