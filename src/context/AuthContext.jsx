@@ -26,12 +26,14 @@ export const AuthProvider = ({ children }) => {
   const signInGoogle = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: "/Auth/dashboard",
+      },
     });
 
     if (error) {
       return { success: false, error };
     }
-    window.location.href = "/Auth/dashboard";
     return { success: true, data };
   };
 
