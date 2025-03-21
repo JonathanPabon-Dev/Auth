@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
     if (error) {
       return { success: false, error };
     }
+    window.location.href = "/Auth/dashboard";
     return { success: true, data };
   };
 
